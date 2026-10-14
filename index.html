@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UVU Supply · Available now</title>
+<meta name="description" content="Running gear from UVU Supply: what's on hand and on the way.">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+:root{--bg:#0a0a0a;--card:#151515;--line:#262626;--text:#f5f5f5;--muted:#9a9a9a;--brand:#DE1D4B;--ok:#3ecf8e;--warn:#f5a524}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header{padding:calc(28px + env(safe-area-inset-top)) 0 18px;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:flex-end;gap:14px}
+.logo .lines{display:flex;flex-direction:column;gap:5px;padding-bottom:8px}
+.logo .lines i{display:block;height:5px;border-radius:3px;background:var(--brand)}
+.logo h1{margin:0;font-size:44px;line-height:.9;font-weight:900;letter-spacing:-.02em}
+.logo small{display:block;color:var(--brand);font-size:13px;font-weight:800;letter-spacing:.55em;margin-top:6px}
+.order{margin:18px 0 0;font-size:16px;font-weight:600}
+.order b{color:var(--brand)}
+.controls{position:sticky;top:0;z-index:2;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 0;border-bottom:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+input[type=search]{flex:1 1 200px;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 12px;font:inherit}
+.count{color:var(--muted);font-size:13px;margin:14px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:6px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.photo{aspect-ratio:4/5;background:#1e1e1e center/cover no-repeat}
+.photo.none{aspect-ratio:auto;height:64px;display:flex;align-items:center;gap:8px;padding:0 14px;color:#555;font-size:12px;letter-spacing:.2em;font-weight:800;background:linear-gradient(90deg,#1b1b1b,#141414)}
+.photo.none i{display:block;width:18px;height:3px;border-radius:2px;background:var(--brand);box-shadow:0 6px 0 var(--brand),0 -6px 0 var(--brand)}
+.body{padding:14px}
+.body h2{margin:0;font-size:17px}
+.cat{color:var(--muted);font-size:13px}
+.sizes{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.sizes b{color:var(--text)}
+ul{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line)}
+li{display:grid;grid-template-columns:52px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+li:last-child{border-bottom:0}
+.size{font-weight:800;text-align:center;background:#222;border-radius:7px;padding:4px 0}
+.state.avail{color:var(--ok)}
+.state.res{color:var(--warn)}
+.eta{color:var(--muted);font-size:13px;text-align:right;white-space:nowrap}
+.eta.hand{color:var(--text)}
+.empty{color:var(--muted);text-align:center;padding:60px 0}
+footer{color:var(--muted);font-size:12px;padding:0 0 calc(30px + env(safe-area-inset-bottom));text-align:center}
+@media (max-width:420px){.logo h1{font-size:36px}.grid{grid-template-columns:1fr 1fr;gap:10px}.body{padding:10px}li{grid-template-columns:40px 1fr;row-gap:2px}.eta{grid-column:2;text-align:left}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo"><div class="lines"><i style="width:46px"></i><i style="width:32px"></i><i style="width:20px"></i></div>
+  <div><h1>UVU</h1><small>SUPPLY</small></div></div>
+  <p class="order" id="order"></p>
+</div></header>
+<div class="controls"><div class="wrap">
+  <div class="row" id="stages"></div>
+  <div class="row" style="margin-top:8px"><input type="search" id="q" placeholder="Search items or sizes" aria-label="Search"></div>
+</div></div>
+<main class="wrap">
+  <p class="count" id="count"></p>
+  <div class="grid" id="grid"></div>
+</main>
+<footer class="wrap" id="updated"></footer>
+<script type="application/json" id="data">{"brand":"UVU Supply","howToOrder":"DM @uvusupply to order or reserve.","items":[{"category":"Tights","image":"images\/d3640e04b0e36e7c.jpg","name":"Black tights v1","pieces":[{"size":"S","stage":"onHand"}]},{"category":"Tights","image":"images\/29c4ec1535d60621.jpg","name":"Blue tights v1","pieces":[{"size":"M","stage":"onHand"},{"size":"L","stage":"onHand"}]},{"category":"Tights","image":"images\/4473545a5cda112d.jpg","name":"Neon tights v2","pieces":[{"size":"L","stage":"onHand"}]},{"category":"Socks","image":"images\/7951dac0cc5f327b.jpg","name":"Training socks pink","pieces":[{"size":"L\/XL","stage":"onHand"}]},{"category":"Singlet","image":"images\/bbe975150df1b86b.jpg","name":"Berlin singlet","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"XL","stage":"inTransit"}]},{"category":"Shorts","image":"images\/914b777525de4f8b.jpg","name":"Black split shorts","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"L","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"XL","stage":"inTransit"}]},{"category":"Socks","image":"images\/a65d2f71c5a9bb22.jpg","name":"Black training socks","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"}]},{"category":"Other","image":"images\/dcf79bbbc9ff3f6c.jpg","name":"Black with white highlights jogging pants","pieces":[{"size":"XL","stage":"inTransit"}]},{"category":"Other","image":"images\/0adaf40572696fd1.jpg","name":"Blue cap UVU","pieces":[{"size":"M","stage":"inTransit"}]},{"category":"Socks","image":"images\/0612b55bc970a058.jpg","name":"Blue socks","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"}]},{"category":"Tights","image":"images\/ed399794ba65b6a2.jpg","name":"Elite socks","pieces":[{"size":"S","stage":"inTransit"},{"size":"L","stage":"inTransit"}]},{"category":"Singlet","image":"images\/423382ecaa948ed6.jpg","name":"London Singlet","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"L","stage":"inTransit"}]},{"category":"Socks","image":"images\/ce8638e051433a1d.jpg","name":"London Socks","pieces":[{"size":"S","stage":"inTransit"},{"size":"L","stage":"inTransit"}]},{"category":"Tights","image":"images\/6ce2be78376228c0.jpg","name":"London tights v2","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"L","stage":"inTransit"}]},{"category":"Singlet","image":"images\/b6c04db8fc5d8387.jpg","name":"New black singlet","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"XL","stage":"inTransit"}]},{"category":"Singlet","image":"images\/53f52ed9a391b993.jpg","name":"New white singlet","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"}]},{"category":"Singlet","image":"images\/53f52ed9a391b993.jpg","name":"New white singlet","pieces":[{"size":"L","stage":"inTransit"}]},{"category":"Tights","image":"images\/14fa6e4625f6aa1c.jpg","name":"Red and yellow tights","pieces":[{"size":"XL","stage":"inTransit"}]},{"category":"Socks","image":"images\/4c53caabb5839b4b.jpg","name":"Red Swirl Socks","pieces":[{"size":"S","stage":"inTransit"},{"size":"L","stage":"inTransit"}]},{"category":"Singlet","image":"images\/bffe079a442b2b00.jpg","name":"Seoul Singlet","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"L","stage":"inTransit"}]},{"category":"Top","image":"images\/49f78af767d36da0.jpg","name":"Swirl running shirt","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"L","stage":"inTransit"}]},{"category":"Top","image":"images\/0bb0d1454386536f.jpg","name":"TClub shirt black","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"}]},{"category":"Top","image":"images\/6a98aa98d1b1a7a8.jpg","name":"TClub Shirt Grey","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"}]},{"category":"Socks","image":"images\/1fdecd3fc036254f.jpg","name":"Training socks white","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"S","stage":"inTransit"}]},{"category":"Other","image":"images\/b69ef20862f4db45.jpg","name":"UVU purple gloves","pieces":[{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"},{"eta":"2026-10-15T18:41:00Z","size":"M","stage":"inTransit"}]},{"category":"Top","image":"images\/f92afaa15e2dc688.jpg","name":"UVU text cutoff shirt","pieces":[{"size":"XL","stage":"inTransit"}]}],"updated":"2026-10-14T08:03:40Z"}</script>
+<script>
+(function(){
+  var data = JSON.parse(document.getElementById('data').textContent);
+  var state = {stage:'all', q:''};
+  var fmt = function(iso){ return new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
+  var esc = function(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+
+  document.getElementById('order').innerHTML = esc(data.howToOrder).replace(/(@[A-Za-z0-9._]+)/g,'<b>$1</b>');
+  document.getElementById('updated').textContent = 'Updated ' + new Date(data.updated).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'});
+
+  var stages = [['all','All'],['onHand','On hand'],['incoming','On the way']];
+  var stageRow = document.getElementById('stages');
+  stages.forEach(function(s){
+    var b = document.createElement('button');
+    b.className='chip'; b.textContent=s[1]; b.dataset.v=s[0];
+    b.onclick=function(){ state.stage=s[0]; render(); };
+    stageRow.appendChild(b);
+  });
+  document.getElementById('q').addEventListener('input',function(e){ state.q=e.target.value.trim().toLowerCase(); render(); });
+
+  function inStage(p){
+    if(state.stage==='all') return true;
+    return state.stage==='onHand' ? p.stage==='onHand' : p.stage!=='onHand';
+  }
+  function etaText(p){
+    if(p.stage==='onHand') return 'On hand';
+    var label = p.stage==='ordered' ? 'Ordered' : 'In transit';
+    return p.eta ? 'ETA ' + fmt(p.eta) : label + ' · ETA TBA';
+  }
+  function summary(pieces){
+    var hand={}, inc={};
+    pieces.forEach(function(p){
+      if(p.reservedTo!==undefined && p.reservedTo!==null) return;
+      var t = p.stage==='onHand' ? hand : inc; t[p.size]=(t[p.size]||0)+1;
+    });
+    var f=function(t){ return Object.keys(t).map(function(k){ return t[k]>1 ? k+' ×'+t[k] : k; }).join(', '); };
+    var parts=[];
+    if(Object.keys(hand).length) parts.push('Available: <b>'+esc(f(hand))+'</b>');
+    if(Object.keys(inc).length) parts.push('Coming: <b>'+esc(f(inc))+'</b>');
+    return parts.join(' · ') || 'All reserved';
+  }
+
+  function render(){
+    Array.prototype.forEach.call(stageRow.children,function(b){ b.setAttribute('aria-pressed', b.dataset.v===state.stage); });
+    var grid=document.getElementById('grid'), html='', shown=0, pcs=0;
+    data.items.forEach(function(item){
+      var pieces = item.pieces.filter(inStage).filter(function(p){
+        return !state.q || (item.name+' '+item.category+' '+p.size).toLowerCase().indexOf(state.q)>=0;
+      });
+      if(!pieces.length) return;
+      shown++; pcs+=pieces.length;
+      html += '<article class="card">' +
+        (item.image ? '<div class="photo" style="background-image:url(\''+esc(item.image)+'\')" role="img" aria-label="'+esc(item.name)+'"></div>' : '<div class="photo none"><i></i>UVU SUPPLY</div>') +
+        '<div class="body"><h2>'+esc(item.name)+'</h2><div class="cat">'+esc(item.category)+'</div>' +
+        '<p class="sizes">'+summary(pieces)+'</p><ul>' +
+        pieces.map(function(p){
+          var st = p.reservedTo!==null && p.reservedTo!==undefined
+            ? '<span class="state res">Reserved to '+esc(p.reservedTo||'someone')+'</span>'
+            : '<span class="state avail">Available</span>';
+          return '<li><span class="size">'+esc(p.size||'—')+'</span>'+st+'<span class="eta'+(p.stage==='onHand'?' hand':'')+'">'+esc(etaText(p))+'</span></li>';
+        }).join('') + '</ul></div></article>';
+    });
+    grid.innerHTML = html || '<p class="empty">Nothing here right now. Check back soon!</p>';
+    document.getElementById('count').textContent = shown ? shown+' item'+(shown===1?'':'s')+' · '+pcs+' piece'+(pcs===1?'':'s') : '';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
